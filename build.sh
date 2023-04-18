@@ -29,4 +29,7 @@ ld -m elf_i386 -s -o ./target/$1 ./target/$1.o
 
 if [ "$2" = "run" ]; then
     "./target/$1"
+
+    # Print the exit code
+    echo "Exit code: $?"
 fi
