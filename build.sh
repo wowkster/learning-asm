@@ -26,11 +26,10 @@ nasm -f elf32 $1.asm -o ./target/$1.o
 
 # If the --gcc argument is passed, use gcc to link
 if [ "$3" = "--gcc" ]; then
-    gcc -m32 ./target/$1.o -o ./target/$1
+    gcc -no-pie -m32 ./target/$1.o -o ./target/$1
 # Otherwise, use ld
 else 
-ld -m elf_i386 -s -o ./target/$1 ./target/$1.o
-
+    ld -m elf_i386 -s -o ./target/$1 ./target/$1.o
 fi
 
 # Run if "run" is passed as an argument
