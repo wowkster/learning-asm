@@ -17,33 +17,39 @@ fib:
     push ebp
     mov ebp, esp
 
-    ; Move the argument (n) into eax
+    ; Allocate Stack Variables
+    sub esp, 4               ; Allocate space for n
+
+    ; Early return
     mov eax, [ebp + 8]
-
-    ; If n == 0, return 0
-    cmp eax, 0
-    je return
-
-    ; If n is <= 2, return 1
+    
+    cmp eax, 0 
+    je return                ; If n == 0, return 0
+    
     cmp eax, 2
-    jle early_return
+    jle early_return         ; If n is <= 2, return 1
+
+    ; Move n into the local stack
+    dec eax                  ; Compute n - 1
+    mov dword [ebp - 4], eax ; Store n - 1 on the stack
 
     ; Call fib(n - 1)
-    dec eax             ; n - 1 in eax
-    push eax            ; stack: (n-1)
-    call fib            ; eax: fib(n - 1)
+    push eax
+    call fib
+    add esp, 4            
 
-    pop ebx             ; ebx: n - 1
-
-    push eax            ; stack: fib(n-1)
+    push eax
 
     ; Call fib(n - 2)
-    dec ebx
-    push ebx
-    call fib            ; eax: fib(n - 2)
+    mov eax, [ebp - 4]       ; Bring n - 1 back
+    dec eax                  ; Compute n - 2
 
-    pop ecx             ; ecx: n - 2
-    pop ebx             ; ebx: fib(n - 1)
+    push eax
+    call fib           
+    add esp, 4
+
+    ; Bring fib(n - 1) back from the stack
+    pop ebx             
 
     ; Add fib(n - 1) (ebx) to fib(n - 2) (eax)
     add eax, ebx
